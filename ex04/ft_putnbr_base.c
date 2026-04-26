@@ -5,12 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sseijas <sergioseijas.ferreiro@gmail.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/25 19:12:07 by sseijas           #+#    #+#             */
-/*   Updated: 2026/04/25 19:57:36 by sseijas          ###   ########.fr       */
+/*   Created: 2026/04/26 11:18:53 by sseijas           #+#    #+#             */
+/*   Updated: 2026/04/26 12:04:18 by sseijas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+//#include <stdio.h>
 
 int	ft_strlen(char *str)
 {
@@ -24,7 +25,7 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-int	is_repe(char *str)
+int	is_rep(char *str)
 {
 	int	i;
 	int	j;
@@ -35,7 +36,7 @@ int	is_repe(char *str)
 		j = i + 1;
 		while (str[j] != '\0')
 		{
-			if (str[i] == str[j])
+			if (str [i] == str[j])
 			{
 				return (1);
 			}
@@ -51,57 +52,59 @@ int	base_check(char *base)
 	int	i;
 
 	i = 0;
-	if (ft_strlen(base) >= 2)
+	if (ft_strlen(base) < 2)
 	{
-		if (is_repe(base) == 1)
+		return (0);
+	}
+	if (is_rep(base) == 1)
+	{
+		return (0);
+	}
+	while (base[i] != '\0')
+	{
+		if (base[i] < 33 || base[i] > 126 || base[i] == 43 || base[i] == 45)
 		{
 			return (0);
 		}
-		while (base[i] != '\0')
-		{
-			if (base[i] == '+' || base[i] == '-' || base[i] == ' ')
-			{
-				return (0);
-			}
-			if (base[i] <= 32 || base[i] > 126)
-			{
-				return (0);
-			}
-			i++;
-		}
-		return (1);
+		i++;
 	}
-	return (0);
+	return (1);
+}
+
+void	ft_put_base(long n, int len_base, char *base)
+{
+	if (n / len_base > 0)
+	{
+		ft_put_base(n / len_base, len_base, base);
+	}
+	write(1, &base[n % len_base], 1);
 }
 
 void	ft_putnbr_base(int nbr, char *base)
 {
-	long int	n;
-	int			len_base;
+	long	n;
+	int		len_base;
 
 	len_base = ft_strlen(base);
 	if (base_check(base) == 0)
 	{
 		return ;
 	}
-	if (nbr < 0)
+	n = nbr;
+	if (n < 0)
 	{
-		n = -nbr;
+		n = -n;
 		write(1, "-", 1);
 	}
-	n = nbr;
-	if (n / len_base != 0)
-	{
-		ft_putnbr_base(n / len_base, base);
-	}
-	write(1, &base[n % len_base], 1);
+	ft_put_base(n, len_base, base);
 }
 
-/*int	main(void)
+/*int main(void)
 {
-	char	*base = "0";
-	int		nbr = 76584;
+	char	*base = "01";
+	int		nbr = -80000000;
 
+	printf("Base válida = %d\n", base_check(base));
 	ft_putnbr_base(nbr, base);
 	return (0);
 }*/
